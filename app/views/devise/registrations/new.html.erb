@@ -1,0 +1,40 @@
+<div class="flex text-center items-center justify-center min-h-screen">
+  <div class="px-12 py-9 rounded-2xl shadow-2xl w-xl">
+    <h2 class="text-2xl font-bold text-green-600">Sign up</h2>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="field">
+        <%= f.label :email %><br />
+        <div class="border border-green-600 rounded mb-4 p-1">
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full text-center outline-none" %>
+        </div>
+      </div>
+
+      <div class="field">
+        <%= f.label :password %>
+        <% if @minimum_password_length %>
+          <em>(<%= @minimum_password_length %> characters minimum)</em>
+        <% end %><br />
+        <div class="border border-green-600 rounded mb-4 p-1">
+          <%= f.password_field :password, autocomplete: "new-password", class: "w-full text-center outline-none" %>
+        </div>
+      </div>
+
+      <div class="field">
+        <%= f.label :password_confirmation %><br />
+        <div class="border border-green-600 rounded mb-4 p-1">
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full text-center outline-none" %>
+        </div>
+      </div>
+
+        <%= f.submit "Sign up", class: "w-full p-1 mb-4 rounded bg-green-100 text-green-600 cursor-pointer" %>
+
+    <% end %>
+
+    <div class="text-green-800">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+</div>

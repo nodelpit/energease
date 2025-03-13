@@ -10,9 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_03_12_123204) do
+ActiveRecord::Schema[7.2].define(version: 2025_03_13_131914) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "energy_consumptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "usage_point_id"
+    t.date "date"
+    t.float "value"
+    t.string "unit"
+    t.string "measuring_period"
+    t.string "measurement_kind"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_energy_consumptions_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -22,7 +35,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_12_123204) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "usage_point_id"
+    t.string "enedis_auth_code"
+    t.string "enedis_token"
+    t.datetime "enedis_token_expires_at"
+    t.string "enedis_refresh_token"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "energy_consumptions", "users"
 end

@@ -48,6 +48,8 @@ group :development, :test do
 
   gem "rspec-rails"
   gem "factory_bot_rails"
+
+  gem "dotenv-rails"
 end
 
 group :development do
@@ -60,6 +62,12 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Permet de simuler des appels API dans les tests
+  gem "webmock"
 end
 
 gem "devise", "~> 4.9"
+
+# API et HTTP
+gem "httparty"

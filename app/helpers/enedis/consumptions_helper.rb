@@ -1,0 +1,2 @@
+module Enedis::ConsumptionsHelper
+end

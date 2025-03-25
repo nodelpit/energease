@@ -1,0 +1,113 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold mb-6">Consommation électrique mensuelle</h1>
+
+  <%= render "shared/alerts" %>
+
+  <!-- Formulaire de sélection de période -->
+  <div class="bg-white rounded-lg shadow p-6 mb-8">
+    <%= form_with url: monthly_enedis_consumptions_path, method: :get, data: { turbo: false }, class: "grid grid-cols-1 md:grid-cols-3 gap-4 items-end" do |f| %>
+      <div>
+        <%= f.label :start_date, "Du", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.date_field :start_date, value: params[:start_date] || (Date.today - 12.months).beginning_of_month, class: "p-1 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+      </div>
+      <div>
+        <%= f.label :end_date, "Au", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.date_field :end_date, value: params[:end_date] || Date.today.end_of_month, class: "p-1 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" %>
+      </div>
+      <div>
+        <%= f.submit "Afficher", class: "w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Statistiques -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow p-6 text-center">
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Consommation totale</h3>
+      <p class="text-3xl font-bold text-green-400"><%= number_with_precision(@total_consumption, precision: 1) %> kWh</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6 text-center">
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Moyenne mensuelle</h3>
+      <p class="text-3xl font-bold text-green-400"><%= number_with_precision(@average_consumption, precision: 1) %> kWh</p>
+    </div>
+    <div class="bg-white rounded-lg shadow p-6 text-center">
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Nombre de mois</h3>
+      <p class="text-3xl font-bold text-green-400"><%= @months_count %></p>
+    </div>
+  </div>
+
+  <!-- Graphique -->
+  <div class="bg-white rounded-lg shadow mb-8">
+    <div class="p-4 border-b border-gray-200">
+      <h2 class="text-lg font-medium text-gray-900">Évolution de la consommation mensuelle</h2>
+    </div>
+    <div class="p-6" style="height: 400px;">
+      <div
+      data-controller="consumption-chart"
+      data-consumption-chart-labels-value='<%= raw @monthly_consumption.map { |c| l(c.date, format: "%b %Y") }.to_json %>'
+      data-consumption-chart-values-value='<%= raw @monthly_consumption.map(&:value).to_json %>'
+      style="width: 100%; height: 100%;">
+        <canvas data-consumption-chart-target="canvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau des données -->
+  <div class="bg-white rounded-lg shadow">
+    <div class="p-4 border-b border-gray-200">
+      <h2 class="text-lg font-medium text-gray-900">Détail des consommations mensuelles</h2>
+    </div>
+    <div class="p-6">
+      <% if @monthly_consumption.any? %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mois</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Consommation</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Évolution</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% previous_value = nil %>
+              <% @monthly_consumption.each do |consumption| %>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <%= l(consumption.date, format: "%B %Y") %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= number_with_precision(consumption.value, precision: 1) %> <%= consumption.unit %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    <% if previous_value %>
+                      <!-- Si une valeur précédente existe, on peut calculer l'évolution -->
+                      <% diff_percentage = ((consumption.value - previous_value) / previous_value * 100).round(1) %>
+                      <% if diff_percentage > 0 %>
+                      <!-- Augmentation de consommation : affichage en rouge avec flèche vers le haut -->
+                        <span class="text-red-600">+<%= diff_percentage %>% ↑</span>
+                      <% elsif diff_percentage < 0 %>
+                      <!-- Diminution de consommation : affichage en vert avec flèche vers le bas -->
+                        <span class="text-green-400"><%= diff_percentage %>% ↓</span>
+                      <% else %>
+                      <!-- Pas de changement : affichage gris avec symbole de stabilité -->
+                        <span class="text-gray-500">0% ⟷</span>
+                      <% end %>
+                    <% else %>
+                    <!-- Si pas de valeur précédente (premier mois affiché) -->
+                      <span class="text-gray-500">-</span>
+                    <% end %>
+                  </td>
+                </tr>
+                <% previous_value = consumption.value %>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="bg-green-50 p-4 rounded-md">
+          <p class="text-green-700">Aucune donnée de consommation mensuelle disponible pour la période sélectionnée.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

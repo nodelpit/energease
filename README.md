@@ -1,24 +1,23 @@
-# README
+# EnergEase
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+EnergeASE est une application Rails permettant le suivi et l'analyse de votre consommation d'énergie en intégrant les données d'Enedis (gestionnaire du réseau de distribution d'électricité en France).
 
-Things you may want to cover:
+## Fonctionnalités
 
-* Ruby version
+- Connexion via l'API Enedis (DataConnect)
+- Visualisation de la consommation d'énergie (quotidienne et mensuelle)
+- Analyses et graphiques de consommation
+- Suivi des tendances d'utilisation
 
-* System dependencies
+## Mode de démonstration
 
-* Configuration
+⚠️ **Important** : Cette application est actuellement en mode démonstration uniquement.
 
-* Database creation
+Le processus d'authentification OAuth2 d'Enedis nécessite une validation en production pour récupérer de véritables données de consommation des utilisateurs. Dans cette version de démonstration :
 
-* Database initialization
+- L'authentification réelle avec Enedis n'est pas disponible
+- Les données de consommation affichées sont générées automatiquement
+- Le service `MockApiService` simule les réponses de l'API Enedis avec des données fictives
+- L'interface utilisateur fonctionne comme si elle était connectée à de vraies données
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Cette approche permet de tester et d'explorer toutes les fonctionnalités de l'application sans avoir besoin d'une autorisation complète d'Enedis pour l'accès aux données réelles des utilisateurs.

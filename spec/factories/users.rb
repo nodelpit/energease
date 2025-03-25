@@ -13,6 +13,7 @@ FactoryBot.define do
     trait :with_valid_token do
       enedis_token { "valid_token" }
       enedis_token_expires_at { 1.hour.from_now }
+      usage_point_id { "12345678901234" }
     end
 
     # User avec token expiré

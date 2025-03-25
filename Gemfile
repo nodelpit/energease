@@ -69,5 +69,8 @@ end
 
 gem "devise", "~> 4.9"
 
+# Gestion de la traduction de l'app
+gem "rails-i18n"
+
 # API et HTTP
 gem "httparty"

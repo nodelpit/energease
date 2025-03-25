@@ -71,4 +71,10 @@ RSpec.configure do |config|
 
   # Inclut les méthodes de FactoryBot
   config.include FactoryBot::Syntax::Methods
+
+  # Configuration de Devise pour les tests
+  # Ces helpers permettent d'utiliser les méthodes comme sign_in et sign_out
+  # dans les tests de contrôleurs et les tests d'intégration
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :request
 end

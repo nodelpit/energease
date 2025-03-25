@@ -45,7 +45,7 @@ module Enedis
       # En cas d'échec, enregistrer l'erreur et lever une exception
       unless response.success?
         Rails.logger.error("Erreur d'authentification Enedis: #{response.code} - #{response.body}")
-        raise ApiError.new(response.code, response.body)
+        raise Enedis::ApiError.new(response.code, response.body)
       end
 
       # Parser la réponse
@@ -96,17 +96,6 @@ module Enedis
       @token_expires_at = nil
 
       response.success?
-    end
-  end
-
-  # Gère les erreurs d'API en stockant le code HTTP et le message d'erreur
-  class ApiError < StandardError
-    attr_reader :code, :body
-
-    def initialize(code, body)
-      @code = code
-      @body = body
-      super("Erreur API Enedis (#{code}): #{body}")
     end
   end
 end

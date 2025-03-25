@@ -1,0 +1,2 @@
+module Enedis::MockHelper
+end

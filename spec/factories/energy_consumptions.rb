@@ -1,11 +1,11 @@
 FactoryBot.define do
-  factory :energy_consumption do
-    user { nil }
-    usage_point_id { "MyString" }
+  factory :energy_consumption, class: 'Enedis::EnergyConsumption' do
+    association :user
+    usage_point_id { "12345678901234" }
     date { "2025-03-13" }
     value { 1.5 }
-    unit { "MyString" }
-    measuring_period { "MyString" }
-    measurement_kind { "MyString" }
+    unit { "kWh" }
+    measuring_period { "DAILY" }
+    measurement_kind { "consumption" }
   end
 end

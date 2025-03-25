@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users
+
   get "home/index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -13,4 +14,22 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#index"
+
+  namespace :enedis do
+    resources :consumptions, only: [ :index, :show ] do
+      collection do
+        get :daily
+        get :monthly
+      end
+    end
+  end
+
+  # Routes pour le mock controller
+  get "/mock/oauth_callback", to: "enedis/mock#oauth_callback", as: :oauth_callback_mock
+
+  # Routes OAuth avec resources
+  resource :oauth, only: [], controller: "enedis/oauth" do
+    get :authorize
+    get :callback
+  end
 end
